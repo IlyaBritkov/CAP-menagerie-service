@@ -2,7 +2,7 @@
 spring:
   config.activate.on-profile: default
   datasource:
-    url: jdbc:sqlite:C:\Users\ilya.britkov\IdeaProjects\products-service\sqlite.db
+    url: jdbc:sqlite:C:\Users\ilya.britkov\IdeaProjects\menagerie-service\sqlite.db
     driver-class-name: org.sqlite.JDBC
     initialization-mode: never
     hikari:

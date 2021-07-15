@@ -7,7 +7,6 @@ In order to **compile & launch** application execute the following command:
 mvn clean spring-boot:run
 ```
 
-
 In order to **install SQLite to the project**
 execute  the following command:
 ```shell
