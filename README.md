@@ -4,15 +4,15 @@
 Before starting the project you have to do
 or ensure that the following are done: <br>
 1. [Install Node.js](https://nodejs.org/)
-  → always use the latest LTS version.
-2. [Install SQLite](https://sqlite.org/download.html) (only required on Windows)
+  → always use the latest LTS version. <br>
+2. [Install SQLite](https://sqlite.org/download.html) (only required on Windows) <br>
 3. Install *@sap/cds-dk* globally with: <br> 
    `npm i -g @sap/cds-dk` <br>
    `cds # test it`
 4. [Install JDK 8](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html) 
-   and set up your environment.
+   and set up your environment. <br>
 5. [Install Maven](https://maven.apache.org/download.cgi)
-   and set up your environment. 
+   and set up your environment. <br>
    
 For more information see [CAP documentation](https://cap.cloud.sap/docs/about/).
 
