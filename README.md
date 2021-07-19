@@ -3,6 +3,7 @@
 <h2 align="center">Predefined requirements</h2>
 Before starting the project you have to do
 or ensure that the following are done: <br>
+
 1. [Install Node.js](https://nodejs.org/)
   → always use the latest LTS version. <br>
 2. [Install SQLite](https://sqlite.org/download.html) (only required on Windows) <br>
