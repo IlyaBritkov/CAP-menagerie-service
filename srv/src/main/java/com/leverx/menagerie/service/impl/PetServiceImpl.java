@@ -86,8 +86,8 @@ public class PetServiceImpl implements PetService {
     }
 
     private void validatePetOwnersDifference(Pets firstPet, Pets secondPet) {
-        boolean isValid = Objects.equals(firstPet.getOwnerId(), secondPet.getOwnerId());
-        if (isValid) {
+        boolean isValid = !Objects.equals(firstPet.getOwnerId(), secondPet.getOwnerId());
+        if (!isValid) {
             throw new ServiceException(BAD_REQUEST, "To exchange pets there are should be two different owners");
         }
     }
