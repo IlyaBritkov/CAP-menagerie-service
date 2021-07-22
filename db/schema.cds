@@ -11,29 +11,30 @@ type AnimalKind : String enum {
 }
 
 entity Pets {
-    key ID      : Integer not null;
-        name    : String(30) not null;
-        age     : Integer @assert.range : [
+    key ID         : Integer not null;
+        name       : String(30) not null;
+        age        : Integer @assert.range : [
             0,
             200
         ];
-        isAlive : Boolean default true not null;
-        gender  : Gender;
-        animalKind: AnimalKind;
-        owner   : Association to Owners;
+        isAlive    : Boolean default true not null;
+        gender     : Gender;
+        animalKind : AnimalKind;
+        owner      : Association to Owners;
 // Tim's variant
 // cat     : Association to Cats;
 // dog     : Association to Dogs;
-// test variant
 }
 
 entity Cats {
-    key pet          : Composition of Pets;
+    key pet         : Composition of Pets;
         isCastrated : Boolean
 }
 
-entity Dogs : Pets {
-    noseIsDry: Boolean
+entity Dogs {
+    key pet_ID    : Integer;
+        // key pet       : Composition of Pets;
+        noseIsDry : Boolean
 }
 
 entity Owners {

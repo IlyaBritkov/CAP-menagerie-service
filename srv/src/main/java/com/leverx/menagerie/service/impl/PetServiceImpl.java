@@ -2,6 +2,8 @@ package com.leverx.menagerie.service.impl;
 
 import cds.gen.petservice.Owners;
 import cds.gen.petservice.Pets;
+import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.mapper.PetMapper;
 import com.leverx.menagerie.repository.PetRepository;
 import com.leverx.menagerie.service.OwnerService;
 import com.leverx.menagerie.service.PetService;
@@ -11,12 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.sap.cds.services.ErrorStatuses.BAD_REQUEST;
 import static com.sap.cds.services.ErrorStatuses.NOT_FOUND;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
@@ -29,6 +34,8 @@ public class PetServiceImpl implements PetService {
     @Qualifier("ownerServiceImpl")
     private final OwnerService ownerService;
 
+    private final PetMapper petMapper;
+
     @Override
     public Pets findEntityById(Integer id) {
         return petRepository.findById(id)
@@ -37,6 +44,21 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public cds.gen.com.leverx.menagerie.Pets createPet(DogCreateRequestDTO dogDTO) {
+        cds.gen.com.leverx.menagerie.Pets newPet = petMapper.toEntity(dogDTO);
+        return petRepository.save(newPet);
+    }
+
+    @Override
+    public List<cds.gen.com.leverx.menagerie.Pets> createPets(List<DogCreateRequestDTO> dogDTOList) {
+        List<cds.gen.com.leverx.menagerie.Pets> newPets = dogDTOList.stream()
+                .map(petMapper::toEntity)
+                .collect(toList());
+        return petRepository.save(newPets);
+    }
+
+    @Override
+    @Transactional
     public void exchangePets(Integer firstPetId, Integer secondPetId) {
         // check are pet ids different
         if (Objects.equals(firstPetId, secondPetId)) {
