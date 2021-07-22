@@ -29,32 +29,41 @@ public class PetRepositoryImpl implements PetRepository {
         CqnSelect findByIdSelect = Select.from(Pets_.class)
                 .where(p -> p.ID().eq(id));
 
-        return db.run(findByIdSelect).first(Pets.class);
+        return db.run(findByIdSelect)
+                .first(Pets.class);
     }
 
     @Override
-    public cds.gen.com.leverx.menagerie.Pets save(cds.gen.com.leverx.menagerie.Pets newPet) {
-        CqnInsert insert = Insert.into(cds.gen.com.leverx.menagerie.Pets_.CDS_NAME).entry(newPet);
+    public Pets save(Pets newPet) {
+        CqnInsert insert = Insert.into(Pets_.CDS_NAME)
+                .entry(newPet);
 
-        return db.run(insert).first(cds.gen.com.leverx.menagerie.Pets.class).get(); // TODO: 7/20/2021
+        return db.run(insert)
+                .single(Pets.class);
     }
 
     @Override
-    public List<cds.gen.com.leverx.menagerie.Pets> save(List<cds.gen.com.leverx.menagerie.Pets> newPetsList) {
-        CqnInsert insert = Insert.into(cds.gen.com.leverx.menagerie.Pets_.CDS_NAME).entries(newPetsList);
+    public List<Pets> save(List<Pets> newPetsList) {
+        CqnInsert insert = Insert.into(Pets_.CDS_NAME)
+                .entries(newPetsList);
 
-        return db.run(insert).listOf(cds.gen.com.leverx.menagerie.Pets.class); // TODO: 7/20/2021
+        return db.run(insert)
+                .listOf(Pets.class);
     }
 
     @Override
     public void update(Pets updatedPet) {
-        CqnUpdate update = Update.entity(Pets_.class).data(updatedPet);
+        CqnUpdate update = Update.entity(Pets_.class)
+                .data(updatedPet);
+
         db.run(update);
     }
 
     @Override
     public void update(List<Pets> updatedPets) {
-        CqnUpdate update = Update.entity(Pets_.class).entries(updatedPets);
+        CqnUpdate update = Update.entity(Pets_.class)
+                .entries(updatedPets);
+
         db.run(update);
     }
 }

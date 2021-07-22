@@ -8,4 +8,6 @@ public interface OwnerRepository {
 
     Optional<Owners> findById(Integer id);
 
+    boolean isOwnerByIdExists(Integer id);
+
 }

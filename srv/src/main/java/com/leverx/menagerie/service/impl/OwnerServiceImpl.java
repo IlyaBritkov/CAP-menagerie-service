@@ -25,4 +25,10 @@ public class OwnerServiceImpl implements OwnerService {
                 .orElseThrow(() -> new ServiceException(NOT_FOUND,
                         String.format("Owner by id=%d does not exist", id)));
     }
+
+    @Override
+    public boolean isOwnerByIdExists(Integer id) {
+        return ownerRepository.isOwnerByIdExists(id);
+    }
+
 }

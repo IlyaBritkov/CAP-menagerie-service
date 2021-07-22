@@ -4,13 +4,11 @@ service PetService {
     @readonly
     entity Pets as projection on datamodel.Pets;
 
-    // entity Dogs as projection on datamodel.Dogs;
+    entity DogsPetsView as select from datamodel.Dogs inner join datamodel.Pets on Dogs.pet.ID=Pets.ID; 
 
-    entity Dogs as select from datamodel.Dogs inner join datamodel.Pets on Dogs.pet_ID=Pets.ID; 
-
-    entity Cats as projection on datamodel.Cats;
+    entity CatsPetsView as select from datamodel.Cats inner join datamodel.Pets on Cats.pet.ID=Pets.ID; 
     
-    entity Owners as projection on datamodel.Owners excluding {pets};
+    entity Owners as projection on datamodel.Owners;
 
     action exchangePets(firstPetId : Integer, secondPetId : Integer);
 }

@@ -9,11 +9,12 @@ public interface PetRepository {
 
     Optional<Pets> findById(Integer id);
 
-    cds.gen.com.leverx.menagerie.Pets save(cds.gen.com.leverx.menagerie.Pets newPet);
+    Pets save(Pets newPet);
 
-    List<cds.gen.com.leverx.menagerie.Pets> save(List<cds.gen.com.leverx.menagerie.Pets> newPetsList);
+    List<Pets> save(List<Pets> newPetsList);
 
     void update(Pets updatedPet);
 
     void update(List<Pets> updatedPets);
+
 }

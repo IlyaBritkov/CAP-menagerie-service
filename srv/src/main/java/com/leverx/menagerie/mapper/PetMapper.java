@@ -1,6 +1,6 @@
 package com.leverx.menagerie.mapper;
 
-import cds.gen.com.leverx.menagerie.Pets;
+import cds.gen.petservice.Pets;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,4 +21,5 @@ public abstract class PetMapper {
     public Pets createFactory() {
         return Pets.create();
     }
+
 }

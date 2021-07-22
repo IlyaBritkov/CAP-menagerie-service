@@ -9,9 +9,10 @@ public interface PetService {
 
     Pets findEntityById(Integer id);
 
-    cds.gen.com.leverx.menagerie.Pets createPet(DogCreateRequestDTO dogDTO);
+    Pets createPet(DogCreateRequestDTO dogDTO);
 
-    List<cds.gen.com.leverx.menagerie.Pets> createPets(List<DogCreateRequestDTO> dogDtoList);
+    List<Pets> createPets(List<DogCreateRequestDTO> dogDtoList);
 
     void exchangePets(Integer firstPetId, Integer secondPetId);
+
 }

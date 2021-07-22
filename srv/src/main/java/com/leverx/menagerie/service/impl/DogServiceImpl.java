@@ -1,7 +1,8 @@
 package com.leverx.menagerie.service.impl;
 
 import cds.gen.com.leverx.menagerie.Dogs;
-import cds.gen.com.leverx.menagerie.Pets;
+import cds.gen.petservice.Pets;
+import cds.gen.petservice.DogsPetsView;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
 import com.leverx.menagerie.mapper.DogMapper;
 import com.leverx.menagerie.repository.DogRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,27 +32,43 @@ public class DogServiceImpl implements DogService {
     private final DogMapper dogMapper;
 
     @Override
-    public cds.gen.petservice.Dogs findDogById(Integer id) {
-        Optional<cds.gen.petservice.Dogs> optionalDogById = dogRepository.findById(id);
+    public DogsPetsView findDogById(Integer id) {
+        Optional<DogsPetsView> optionalDogById = dogRepository.findById(id);
+
         return optionalDogById.orElseThrow(() -> new ServiceException(NOT_FOUND,
                 String.format("Dog by id=%d does not exist", id)));
     }
 
     @Override
-    public Dogs createDog(DogCreateRequestDTO dogDTO) {
-        petService.createPet(dogDTO);
+    public DogsPetsView createDog(DogCreateRequestDTO dogDTO) {
+        Pets persistedNewPet = petService.createPet(dogDTO);
         Dogs newDog = dogMapper.toEntity(dogDTO);
-        return dogRepository.save(newDog);
+        Dogs persistedNewDog = dogRepository.save(newDog);
+
+        return dogMapper.toDogsPetsView(persistedNewPet, persistedNewDog);
     }
 
     @Override
-    public List<Dogs> createDog(List<DogCreateRequestDTO> dogDTOList) {
-        List<Pets> petsResult = petService.createPets(dogDTOList); // TODO: 7/21/2021
+    public List<DogsPetsView> createDog(List<DogCreateRequestDTO> dogDTOList) {
+        List<Pets> persistedPetsList = petService.createPets(dogDTOList);
+
         List<Dogs> newDogsList = dogDTOList.stream()
                 .map(dogMapper::toEntity)
                 .collect(toList());
 
-        List<Dogs> result = dogRepository.save(newDogsList);
+        List<Dogs> persistedDogsList = dogRepository.save(newDogsList);
+
+        int newDogsSize = persistedPetsList.size();
+        List<DogsPetsView> result = new ArrayList<>();
+
+        for (int i = 0; i < newDogsSize; i++) {
+            Pets currentPet = persistedPetsList.get(i);
+            Dogs currentDog = persistedDogsList.get(i);
+            DogsPetsView dogsPetsView = dogMapper.toDogsPetsView(currentPet, currentDog);
+
+            result.add(dogsPetsView);
+        }
+
         return result;
     }
 }

@@ -21,9 +21,6 @@ entity Pets {
         gender     : Gender;
         animalKind : AnimalKind;
         owner      : Association to Owners;
-// Tim's variant
-// cat     : Association to Cats;
-// dog     : Association to Dogs;
 }
 
 entity Cats {
@@ -32,8 +29,7 @@ entity Cats {
 }
 
 entity Dogs {
-    key pet_ID    : Integer;
-        // key pet       : Composition of Pets;
+        key pet       : Composition of Pets;
         noseIsDry : Boolean
 }
 

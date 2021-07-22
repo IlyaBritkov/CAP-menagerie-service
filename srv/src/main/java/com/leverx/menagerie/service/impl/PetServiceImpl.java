@@ -34,6 +34,8 @@ public class PetServiceImpl implements PetService {
     @Qualifier("ownerServiceImpl")
     private final OwnerService ownerService;
 
+    private final CheckExistenceServiceImpl checkExistenceService;
+
     private final PetMapper petMapper;
 
     @Override
@@ -44,23 +46,28 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public cds.gen.com.leverx.menagerie.Pets createPet(DogCreateRequestDTO dogDTO) {
-        cds.gen.com.leverx.menagerie.Pets newPet = petMapper.toEntity(dogDTO);
+    public Pets createPet(DogCreateRequestDTO dogDTO) {
+        Pets newPet = petMapper.toEntity(dogDTO);
+        validateOwnerExistence(newPet);
+
         return petRepository.save(newPet);
     }
 
     @Override
-    public List<cds.gen.com.leverx.menagerie.Pets> createPets(List<DogCreateRequestDTO> dogDTOList) {
-        List<cds.gen.com.leverx.menagerie.Pets> newPets = dogDTOList.stream()
+    public List<Pets> createPets(List<DogCreateRequestDTO> dogDTOList) {
+        List<Pets> newPets = dogDTOList.stream()
                 .map(petMapper::toEntity)
                 .collect(toList());
+
+        newPets.forEach(this::validateOwnerExistence);
+
         return petRepository.save(newPets);
     }
 
     @Override
     @Transactional
     public void exchangePets(Integer firstPetId, Integer secondPetId) {
-        // check are pet ids different
+        // check if pet ids different
         if (Objects.equals(firstPetId, secondPetId)) {
             throw new ServiceException(BAD_REQUEST, "To exchange pets there are should be different pets");
         }
@@ -119,4 +126,13 @@ public class PetServiceImpl implements PetService {
             throw new ServiceException(BAD_REQUEST, "To exchange pets their owners should be alive");
         }
     }
+
+    private void validateOwnerExistence(Pets newPet) {
+        Integer ownerId = newPet.getOwnerId();
+        boolean isOwnerByIdExists = checkExistenceService.isOwnerByIdExists(ownerId);
+        if (!isOwnerByIdExists) {
+            throw new ServiceException(BAD_REQUEST, String.format("Owner with id = %s doesn't exist", ownerId));
+        }
+    }
+
 }

@@ -24,6 +24,17 @@ public class OwnerRepositoryImpl implements OwnerRepository {
         CqnSelect findByIdSelect = Select.from(Owners_.class)
                 .where(owner -> owner.ID().eq(id));
 
-        return db.run(findByIdSelect).first(Owners.class);
+        return db.run(findByIdSelect)
+                .first(Owners.class);
     }
+
+    @Override
+    public boolean isOwnerByIdExists(Integer id) {
+        Select<Owners_> selectById = Select.from(Owners_.class)
+                .where(owner -> owner.ID().eq(id));
+
+        return db.run(selectById)
+                .rowCount() != 0;
+    }
+
 }
