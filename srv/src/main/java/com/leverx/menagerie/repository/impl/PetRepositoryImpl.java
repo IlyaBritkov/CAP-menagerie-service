@@ -25,7 +25,7 @@ public class PetRepositoryImpl implements PetRepository {
     private final PersistenceService db;
 
     @Override
-    public Optional<Pets> findById(Integer id) {
+    public Optional<Pets> findById(String id) {
         CqnSelect findByIdSelect = Select.from(Pets_.class)
                 .where(p -> p.ID().eq(id));
 

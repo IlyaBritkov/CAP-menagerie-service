@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class CatCreateRequestDTO {
-    private Integer ID;
 
     private String name;
 
@@ -18,7 +17,7 @@ public class CatCreateRequestDTO {
 
     private String animalKind;
 
-    private Integer owner_ID;
+    private String owner_ID;
 
     private Boolean isCastrated;
 }

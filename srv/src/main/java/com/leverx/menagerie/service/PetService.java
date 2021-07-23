@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface PetService {
 
-    Pets findEntityById(Integer id);
+    Pets findEntityById(String id);
 
     Pets createPet(DogCreateRequestDTO dogDTO);
 
     List<Pets> createPets(List<DogCreateRequestDTO> dogDtoList);
 
-    void exchangePets(Integer firstPetId, Integer secondPetId);
+    void exchangePets(String firstPetId, String secondPetId);
 
 }

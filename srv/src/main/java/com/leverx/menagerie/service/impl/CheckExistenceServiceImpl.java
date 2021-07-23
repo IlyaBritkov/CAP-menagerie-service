@@ -14,7 +14,7 @@ public class CheckExistenceServiceImpl implements CheckExistenceService {
     private final OwnerService ownerService;
 
     @Override
-    public boolean isOwnerByIdExists(Integer id) {
+    public boolean isOwnerByIdExists(String id) {
         return ownerService.isOwnerByIdExists(id);
     }
 

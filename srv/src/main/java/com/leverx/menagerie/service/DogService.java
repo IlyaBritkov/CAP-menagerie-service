@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DogService {
 
-    DogsPetsView findDogById(Integer id);
+    DogsPetsView findDogById(String id);
 
     DogsPetsView createDog(DogCreateRequestDTO dogDTO);
 

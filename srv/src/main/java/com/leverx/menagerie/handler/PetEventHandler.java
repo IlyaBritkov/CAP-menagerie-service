@@ -45,7 +45,6 @@ public class PetEventHandler implements EventHandler {
         List<DogCreateRequestDTO> requestDogDTOsList = getRequestDTOsFromContext(context, DogCreateRequestDTO.class);
 
         List<DogsPetsView> dogsPetsViewList = dogService.createDog(requestDogDTOsList);
-
         List<Map<String, Object>> resultList = convertObjectListToObjectMapList(dogsPetsViewList);
 
         context.setResult(resultList);
@@ -58,8 +57,8 @@ public class PetEventHandler implements EventHandler {
      */
     @On(event = "exchangePets")
     public void exchangePets(ExchangePetsContext context) {
-        Integer firstPetId = context.getFirstPetId();
-        Integer secondPetId = context.getSecondPetId();
+        String firstPetId = context.getFirstPetId();
+        String secondPetId = context.getSecondPetId();
 
         log.info("Exchange request with pet ids: [{},{}]", firstPetId, secondPetId);
 

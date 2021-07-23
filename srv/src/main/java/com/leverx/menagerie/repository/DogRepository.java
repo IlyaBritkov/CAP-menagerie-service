@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface DogRepository {
 
-    Optional<DogsPetsView> findById(Integer id);
+    Optional<DogsPetsView> findById(String id);
 
     Dogs save(Dogs newDog);
 

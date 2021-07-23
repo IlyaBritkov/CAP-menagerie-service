@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface OwnerRepository {
 
-    Optional<Owners> findById(Integer id);
+    Optional<Owners> findById(String id);
 
-    boolean isOwnerByIdExists(Integer id);
+    boolean isOwnerByIdExists(String id);
 
 }

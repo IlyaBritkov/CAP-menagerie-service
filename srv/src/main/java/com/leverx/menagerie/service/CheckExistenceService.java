@@ -2,6 +2,6 @@ package com.leverx.menagerie.service;
 
 public interface CheckExistenceService {
 
-    boolean isOwnerByIdExists(Integer id);
+    boolean isOwnerByIdExists(String id);
 
 }

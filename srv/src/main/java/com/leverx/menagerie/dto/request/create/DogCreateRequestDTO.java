@@ -1,14 +1,11 @@
 package com.leverx.menagerie.dto.request.create;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
 public class DogCreateRequestDTO {
-    @JsonProperty("ID")
-    private Integer ID;
 
     private String name;
 
@@ -20,7 +17,7 @@ public class DogCreateRequestDTO {
 
     private String animalKind;
 
-    private Integer owner_ID;
+    private String owner_ID;
 
     private Boolean noseIsDry;
 }

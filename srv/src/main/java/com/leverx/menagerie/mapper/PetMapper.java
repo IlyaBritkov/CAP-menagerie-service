@@ -13,7 +13,7 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 )
 public abstract class PetMapper {
 
-    @Mapping(source = "ID", target = "id")
+//    @Mapping(source = "ID", target = "id") TODO DELETE IT
     @Mapping(source = "owner_ID", target = "ownerId")
     public abstract Pets toEntity(DogCreateRequestDTO createRequest);
 

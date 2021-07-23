@@ -39,10 +39,10 @@ public class PetServiceImpl implements PetService {
     private final PetMapper petMapper;
 
     @Override
-    public Pets findEntityById(Integer id) {
+    public Pets findEntityById(String id) {
         return petRepository.findById(id)
                 .orElseThrow(() -> new ServiceException(NOT_FOUND,
-                        String.format("Pet by id=%d does not exist", id)));
+                        String.format("Pet by id=%s does not exist", id)));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     @Transactional
-    public void exchangePets(Integer firstPetId, Integer secondPetId) {
+    public void exchangePets(String firstPetId, String secondPetId) {
         // check if pet ids different
         if (Objects.equals(firstPetId, secondPetId)) {
             throw new ServiceException(BAD_REQUEST, "To exchange pets there are should be different pets");
@@ -83,8 +83,8 @@ public class PetServiceImpl implements PetService {
         validatePetOwnersForPetExchange(firstPet, secondPet);
 
 
-        Integer firstOwnerId = firstPet.getOwnerId();
-        Integer secondOwnerId = secondPet.getOwnerId();
+        String firstOwnerId = firstPet.getOwnerId();
+        String secondOwnerId = secondPet.getOwnerId();
 
         // exchange
         firstPet.setOwnerId(secondOwnerId);
@@ -105,8 +105,8 @@ public class PetServiceImpl implements PetService {
     private void validatePetOwnersForPetExchange(Pets firstPet, Pets secondPet) {
         validatePetOwnersDifference(firstPet, secondPet);
 
-        Integer firstOwnerId = firstPet.getOwnerId();
-        Integer secondOwnerId = secondPet.getOwnerId();
+        String firstOwnerId = firstPet.getOwnerId();
+        String secondOwnerId = secondPet.getOwnerId();
 
         Owners firstOwner = ownerService.findEntityById(firstOwnerId);
         Owners secondOwner = ownerService.findEntityById(secondOwnerId);
@@ -128,7 +128,7 @@ public class PetServiceImpl implements PetService {
     }
 
     private void validateOwnerExistence(Pets newPet) {
-        Integer ownerId = newPet.getOwnerId();
+        String ownerId = newPet.getOwnerId();
         boolean isOwnerByIdExists = checkExistenceService.isOwnerByIdExists(ownerId);
         if (!isOwnerByIdExists) {
             throw new ServiceException(BAD_REQUEST, String.format("Owner with id = %s doesn't exist", ownerId));

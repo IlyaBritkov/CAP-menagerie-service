@@ -24,7 +24,7 @@ public class DogRepositoryImpl implements DogRepository {
     private final PersistenceService db;
 
     @Override
-    public Optional<DogsPetsView> findById(Integer id) {
+    public Optional<DogsPetsView> findById(String id) {
         Select<DogsPetsView_> selectById = Select.from(DogsPetsView_.class)
                 .where(dog -> dog.pet_ID().eq(id))
                 .limit(1);

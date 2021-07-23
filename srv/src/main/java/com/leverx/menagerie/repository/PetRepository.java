@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PetRepository {
 
-    Optional<Pets> findById(Integer id);
+    Optional<Pets> findById(String id);
 
     Pets save(Pets newPet);
 

@@ -5,8 +5,8 @@ import cds.gen.petservice.Owners;
 
 public interface OwnerService {
 
-    Owners findEntityById(Integer id);
+    Owners findEntityById(String id);
 
-    boolean isOwnerByIdExists(Integer id);
+    boolean isOwnerByIdExists(String id);
 
 }

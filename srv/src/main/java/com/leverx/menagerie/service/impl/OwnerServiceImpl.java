@@ -20,14 +20,14 @@ public class OwnerServiceImpl implements OwnerService {
     private final OwnerRepository ownerRepository;
 
     @Override
-    public Owners findEntityById(Integer id) {
+    public Owners findEntityById(String id) {
         return ownerRepository.findById(id)
                 .orElseThrow(() -> new ServiceException(NOT_FOUND,
-                        String.format("Owner by id=%d does not exist", id)));
+                        String.format("Owner by id=%s does not exist", id)));
     }
 
     @Override
-    public boolean isOwnerByIdExists(Integer id) {
+    public boolean isOwnerByIdExists(String id) {
         return ownerRepository.isOwnerByIdExists(id);
     }
 

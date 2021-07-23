@@ -20,7 +20,7 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     private final PersistenceService db;
 
     @Override
-    public Optional<Owners> findById(Integer id) {
+    public Optional<Owners> findById(String id) {
         CqnSelect findByIdSelect = Select.from(Owners_.class)
                 .where(owner -> owner.ID().eq(id));
 
@@ -29,7 +29,7 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     }
 
     @Override
-    public boolean isOwnerByIdExists(Integer id) {
+    public boolean isOwnerByIdExists(String id) {
         Select<Owners_> selectById = Select.from(Owners_.class)
                 .where(owner -> owner.ID().eq(id));
 
