@@ -13,8 +13,8 @@ public interface PetRepository {
 
     List<Pets> save(List<Pets> newPetsList);
 
-    void update(Pets updatedPet);
+    Pets update(Pets updatedPet);
 
-    void update(List<Pets> updatedPets);
+    List<Pets> update(List<Pets> updatedPets);
 
 }

@@ -5,6 +5,7 @@ import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.Pets;
 import com.codepoetics.protonpack.StreamUtils;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.dto.request.update.DogUpdateRequestDTO;
 import com.leverx.menagerie.mapper.DogMapper;
 import com.leverx.menagerie.repository.DogRepository;
 import com.leverx.menagerie.service.DogService;
@@ -32,8 +33,8 @@ public class DogServiceImpl implements DogService {
     private final DogMapper dogMapper;
 
     @Override
-    public DogsPetsView findDogById(String id) {
-        Optional<DogsPetsView> optionalDogById = dogRepository.findById(id);
+    public DogsPetsView findDogPetViewById(String id) {
+        Optional<DogsPetsView> optionalDogById = dogRepository.findDogPetViewById(id);
 
         return optionalDogById.orElseThrow(() -> new ServiceException(NOT_FOUND,
                 String.format("Dog by id=%s does not exist", id)));
@@ -75,4 +76,19 @@ public class DogServiceImpl implements DogService {
                     return dogMapper.toDogsPetsView(currentPet, currentDog);
                 }).collect(toList());
     }
+
+    @Override
+    public DogsPetsView updateDog(DogUpdateRequestDTO requestDogDTO) {
+        final String dogId = requestDogDTO.getId();
+        DogsPetsView persistedDogPetView = findDogPetViewById(dogId);
+
+        dogMapper.updateDog(requestDogDTO, persistedDogPetView);
+
+        Pets updatedPet = petService.updatePet(persistedDogPetView);
+        Dogs newDog = dogMapper.toEntity(persistedDogPetView);
+        Dogs updatedDog = dogRepository.update(newDog);
+
+        return dogMapper.toDogsPetsView(updatedPet, updatedDog);
+    }
+
 }

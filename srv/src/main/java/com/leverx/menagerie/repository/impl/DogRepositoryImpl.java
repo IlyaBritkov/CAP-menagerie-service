@@ -7,6 +7,7 @@ import cds.gen.petservice.DogsPetsView_;
 import com.leverx.menagerie.repository.DogRepository;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnInsert;
 import com.sap.cds.services.persistence.PersistenceService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,9 @@ public class DogRepositoryImpl implements DogRepository {
     private final PersistenceService db;
 
     @Override
-    public Optional<DogsPetsView> findById(String id) {
+    public Optional<DogsPetsView> findDogPetViewById(String id) {
         Select<DogsPetsView_> selectById = Select.from(DogsPetsView_.class)
-                .where(dog -> dog.pet_ID().eq(id))
+                .where(dog -> dog.ID().eq(id))
                 .limit(1);
 
         return db.run(selectById)
@@ -35,10 +36,10 @@ public class DogRepositoryImpl implements DogRepository {
 
     @Override
     public Dogs save(Dogs newDog) {
-        CqnInsert insert = Insert.into(Dogs_.CDS_NAME)
+        CqnInsert insertNewDog = Insert.into(Dogs_.CDS_NAME)
                 .entry(newDog);
 
-        return db.run(insert)
+        return db.run(insertNewDog)
                 .single(Dogs.class);
     }
 
@@ -49,6 +50,24 @@ public class DogRepositoryImpl implements DogRepository {
 
         return db.run(insert)
                 .listOf(Dogs.class);
+    }
+
+    @Override
+    public DogsPetsView update(DogsPetsView dog) { // todo try it
+        Update<DogsPetsView_> updateDog = Update.entity(DogsPetsView_.class)
+                .data(dog);
+
+        return db.run(updateDog)
+                .single(DogsPetsView.class);
+    }
+
+    @Override
+    public Dogs update(Dogs dog) {
+        Update<Dogs_> updateDog = Update.entity(Dogs_.class)
+                .data(dog);
+
+        return db.run(updateDog)
+                .single(Dogs.class);
     }
 
 }

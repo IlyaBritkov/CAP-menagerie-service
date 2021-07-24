@@ -1,5 +1,6 @@
 package com.leverx.menagerie.service;
 
+import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.Pets;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
 
@@ -15,4 +16,5 @@ public interface PetService {
 
     void exchangePets(String firstPetId, String secondPetId);
 
+    Pets updatePet(DogsPetsView dogPetView);
 }

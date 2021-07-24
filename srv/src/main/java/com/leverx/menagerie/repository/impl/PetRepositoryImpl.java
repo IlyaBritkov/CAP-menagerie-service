@@ -52,18 +52,21 @@ public class PetRepositoryImpl implements PetRepository {
     }
 
     @Override
-    public void update(Pets updatedPet) {
-        CqnUpdate update = Update.entity(Pets_.class)
+    public Pets update(Pets updatedPet) {
+        CqnUpdate update = Update.entity(Pets_.CDS_NAME)
                 .data(updatedPet);
 
-        db.run(update);
+        return db.run(update)
+                .single(Pets.class);
     }
 
     @Override
-    public void update(List<Pets> updatedPets) {
+    public List<Pets> update(List<Pets> updatedPets) {
         CqnUpdate update = Update.entity(Pets_.class)
                 .entries(updatedPets);
 
-        db.run(update);
+        return db.run(update)
+                .listOf(Pets.class);
     }
+
 }

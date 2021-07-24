@@ -6,9 +6,12 @@ import cds.gen.petservice.ExchangePetsContext;
 import cds.gen.petservice.PetService_;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.dto.request.update.DogUpdateRequestDTO;
 import com.leverx.menagerie.service.DogService;
 import com.leverx.menagerie.service.PetService;
+import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CdsCreateEventContext;
+import com.sap.cds.services.cds.CdsUpdateEventContext;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
@@ -22,7 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.sap.cds.services.ErrorStatuses.BAD_REQUEST;
 import static com.sap.cds.services.cds.CdsService.EVENT_CREATE;
+import static com.sap.cds.services.cds.CdsService.EVENT_UPDATE;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -41,13 +47,24 @@ public class PetEventHandler implements EventHandler {
 
     @On(event = EVENT_CREATE, entity = DogsPetsView_.CDS_NAME)
     public void onDogCreate(CdsCreateEventContext context) {
-
-        List<DogCreateRequestDTO> requestDogDTOsList = getRequestDTOsFromContext(context, DogCreateRequestDTO.class);
+        List<DogCreateRequestDTO> requestDogDTOsList = getRequestDTOListFromCreateContext(context, DogCreateRequestDTO.class);
 
         List<DogsPetsView> dogsPetsViewList = dogService.createDog(requestDogDTOsList);
         List<Map<String, Object>> resultList = convertObjectListToObjectMapList(dogsPetsViewList);
 
         context.setResult(resultList);
+    }
+
+    @On(event = EVENT_UPDATE, entity = DogsPetsView_.CDS_NAME)
+    public void onDogUpdate(CdsUpdateEventContext context) {
+        DogUpdateRequestDTO requestDogDTO = getRequestDTOFromUpdateContext(context, DogUpdateRequestDTO.class);
+
+        DogsPetsView updatedDog = dogService.updateDog(requestDogDTO);
+
+        List<Map<String, Object>> resultList = convertObjectToObjectMapList(updatedDog);
+
+        context.setResult(resultList);
+        context.setCompleted();
     }
 
     /**
@@ -66,12 +83,30 @@ public class PetEventHandler implements EventHandler {
         context.setCompleted();
     }
 
-    private <T> List<T> getRequestDTOsFromContext(CdsCreateEventContext context, Class<T> objectClass) {
+    private <T> T getRequestDTOFromUpdateContext(CdsUpdateEventContext context, Class<T> objectClass) {
+        List<Map<String, Object>> entriesMaps = context.getCqn().asUpdate().entries();
+
+        List<T> objectList = entriesMaps.stream()
+                .map(entryMap -> objectMapper.convertValue(entryMap, objectClass))
+                .collect(toList());
+
+        if (objectList.size() == 1 && objectList.get(0) != null) {
+            return objectList.get(0);
+        } else {
+            throw new ServiceException(BAD_REQUEST, "Unsupported request body compound");
+        }
+    }
+
+    private <T> List<T> getRequestDTOListFromCreateContext(CdsCreateEventContext context, Class<T> objectClass) {
         List<Map<String, Object>> entriesMaps = context.getCqn().asInsert().entries();
 
         return entriesMaps.stream()
                 .map(entryMap -> objectMapper.convertValue(entryMap, objectClass))
                 .collect(toList());
+    }
+
+    private <T> List<Map<String, Object>> convertObjectToObjectMapList(T object) {
+        return convertObjectListToObjectMapList(singletonList(object));
     }
 
     @SuppressWarnings("unchecked")

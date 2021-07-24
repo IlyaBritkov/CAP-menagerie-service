@@ -1,5 +1,6 @@
 package com.leverx.menagerie.service.impl;
 
+import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.Owners;
 import cds.gen.petservice.Pets;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
@@ -91,6 +92,13 @@ public class PetServiceImpl implements PetService {
         secondPet.setOwnerId(firstOwnerId);
 
         petRepository.update(asList(firstPet, secondPet));
+    }
+
+    @Override
+    public Pets updatePet(DogsPetsView dogPetView) {
+        Pets newPet = petMapper.toEntity(dogPetView);
+
+        return petRepository.update(newPet);
     }
 
     private void validatePetsAreAlive(Pets firstPet, Pets secondPet) {
