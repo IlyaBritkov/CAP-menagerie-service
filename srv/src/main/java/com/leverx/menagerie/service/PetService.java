@@ -1,8 +1,9 @@
 package com.leverx.menagerie.service;
 
 import cds.gen.petservice.DogsPetsView;
+import cds.gen.petservice.CatsPetsView;
 import cds.gen.petservice.Pets;
-import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.dto.request.create.PetCreateRequestDTO;
 
 import java.util.List;
 
@@ -10,11 +11,13 @@ public interface PetService {
 
     Pets findEntityById(String id);
 
-    Pets createPet(DogCreateRequestDTO dogDTO);
+    Pets createPet(PetCreateRequestDTO petDTO);
 
-    List<Pets> createPets(List<DogCreateRequestDTO> dogDtoList);
+    List<Pets> createPets(List<? extends PetCreateRequestDTO> petDtoList);
 
     void exchangePets(String firstPetId, String secondPetId);
 
     Pets updatePet(DogsPetsView dogPetView);
+
+    Pets updatePet(CatsPetsView catPetView);
 }

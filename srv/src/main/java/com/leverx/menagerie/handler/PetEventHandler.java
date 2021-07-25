@@ -1,12 +1,17 @@
 package com.leverx.menagerie.handler;
 
+import cds.gen.petservice.CatsPetsView;
+import cds.gen.petservice.CatsPetsView_;
 import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.DogsPetsView_;
 import cds.gen.petservice.ExchangePetsContext;
 import cds.gen.petservice.PetService_;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leverx.menagerie.dto.request.create.CatCreateRequestDTO;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.dto.request.update.CatUpdateRequestDTO;
 import com.leverx.menagerie.dto.request.update.DogUpdateRequestDTO;
+import com.leverx.menagerie.service.CatService;
 import com.leverx.menagerie.service.DogService;
 import com.leverx.menagerie.service.PetService;
 import com.sap.cds.services.ServiceException;
@@ -36,12 +41,14 @@ import static java.util.stream.Collectors.toList;
 
 @Component
 @ServiceName(PetService_.CDS_NAME)
-public class PetEventHandler implements EventHandler {
+public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check how deletion of owner affects on pets
 
     @Qualifier("petServiceImpl")
     private final PetService petService;
 
     private final DogService dogService;
+
+    private final CatService catService;
 
     private final ObjectMapper objectMapper;
 
@@ -51,6 +58,16 @@ public class PetEventHandler implements EventHandler {
 
         List<DogsPetsView> dogsPetsViewList = dogService.createDog(requestDogDTOsList);
         List<Map<String, Object>> resultList = convertObjectListToObjectMapList(dogsPetsViewList);
+
+        context.setResult(resultList); // TODO: 7/25/2021 maybe add context.completed()
+    }
+
+    @On(event = EVENT_CREATE, entity = CatsPetsView_.CDS_NAME)
+    public void onCatCreate(CdsCreateEventContext context) {
+        List<CatCreateRequestDTO> requestCatDTOsList = getRequestDTOListFromCreateContext(context, CatCreateRequestDTO.class);
+
+        List<CatsPetsView> catsPetsViewList = catService.createCat(requestCatDTOsList);
+        List<Map<String, Object>> resultList = convertObjectListToObjectMapList(catsPetsViewList);
 
         context.setResult(resultList);
     }
@@ -62,6 +79,18 @@ public class PetEventHandler implements EventHandler {
         DogsPetsView updatedDog = dogService.updateDog(requestDogDTO);
 
         List<Map<String, Object>> resultList = convertObjectToObjectMapList(updatedDog);
+
+        context.setResult(resultList);
+        context.setCompleted();
+    }
+
+    @On(event = EVENT_UPDATE, entity = CatsPetsView_.CDS_NAME)
+    public void onCatUpdate(CdsUpdateEventContext context) {
+        CatUpdateRequestDTO requestCatDTO = getRequestDTOFromUpdateContext(context, CatUpdateRequestDTO.class);
+
+        CatsPetsView updatedCat = catService.updateCat(requestCatDTO);
+
+        List<Map<String, Object>> resultList = convertObjectToObjectMapList(updatedCat);
 
         context.setResult(resultList);
         context.setCompleted();

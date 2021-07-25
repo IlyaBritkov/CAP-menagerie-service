@@ -12,9 +12,9 @@ public interface DogRepository {
 
     Dogs save(Dogs newDog);
 
-    DogsPetsView update(DogsPetsView dog);
-
     List<Dogs> save(List<Dogs> newDogsList);
+
+    DogsPetsView update(DogsPetsView dog);
 
     Dogs update(Dogs dog);
 }

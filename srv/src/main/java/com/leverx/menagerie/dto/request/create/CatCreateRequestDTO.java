@@ -1,23 +1,13 @@
 package com.leverx.menagerie.dto.request.create;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class CatCreateRequestDTO {
-
-    private String name;
-
-    private Integer age;
-
-    private Boolean isAlive;
-
-    private String gender;
-
-    private String animalKind;
-
-    private String owner_ID;
+@EqualsAndHashCode(callSuper = true)
+public class CatCreateRequestDTO extends PetCreateRequestDTO {
 
     private Boolean isCastrated;
 }

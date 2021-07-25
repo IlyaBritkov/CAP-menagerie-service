@@ -6,21 +6,30 @@ service PetService {
     entity Pets         as projection on datamodel.Pets;
 
     entity CatsPetsView as
-        select from datamodel.Cats
-        inner join datamodel.Pets
-            on Cats.pet.ID = Pets.ID;
+        select from datamodel.Cats {
+            Cats.ID,
+            Cats.isCastrated,
+            Cats.pet,
+            Cats.pet.name,
+            Cats.pet.age,
+            Cats.pet.gender,
+            Cats.pet.animalKind,
+            Cats.pet.isAlive,
+            Cats.pet.owner
+        };
 
-    entity DogsPetsView as select from datamodel.Dogs {
-        Dogs.ID,
-        Dogs.noseIsDry,
-        Dogs.pet,
-        Dogs.pet.name,
-        Dogs.pet.age,
-        Dogs.pet.gender,
-        Dogs.pet.animalKind,
-        Dogs.pet.isAlive,
-        Dogs.pet.owner
-    };
+    entity DogsPetsView as
+        select from datamodel.Dogs {
+            Dogs.ID,
+            Dogs.noseIsDry,
+            Dogs.pet,
+            Dogs.pet.name,
+            Dogs.pet.age,
+            Dogs.pet.gender,
+            Dogs.pet.animalKind,
+            Dogs.pet.isAlive,
+            Dogs.pet.owner
+        };
 
     entity Owners       as projection on datamodel.Owners;
     action exchangePets(firstPetId : String, secondPetId : String);

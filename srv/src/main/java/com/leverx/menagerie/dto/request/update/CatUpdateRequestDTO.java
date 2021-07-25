@@ -1,4 +1,4 @@
-package com.leverx.menagerie.dto.request.create;
+package com.leverx.menagerie.dto.request.update;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DogCreateRequestDTO extends PetCreateRequestDTO {
+public class CatUpdateRequestDTO extends PetUpdateRequestDTO {
 
-    private Boolean noseIsDry;
+    private Boolean isCastrated;
 }

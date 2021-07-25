@@ -1,9 +1,10 @@
 package com.leverx.menagerie.service.impl;
 
+import cds.gen.petservice.CatsPetsView;
 import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.Owners;
 import cds.gen.petservice.Pets;
-import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
+import com.leverx.menagerie.dto.request.create.PetCreateRequestDTO;
 import com.leverx.menagerie.mapper.PetMapper;
 import com.leverx.menagerie.repository.PetRepository;
 import com.leverx.menagerie.service.OwnerService;
@@ -47,16 +48,16 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pets createPet(DogCreateRequestDTO dogDTO) {
-        Pets newPet = petMapper.toEntity(dogDTO);
+    public Pets createPet(PetCreateRequestDTO petDTO) {
+        Pets newPet = petMapper.toEntity(petDTO);
         validateOwnerExistence(newPet);
 
         return petRepository.save(newPet);
     }
 
     @Override
-    public List<Pets> createPets(List<DogCreateRequestDTO> dogDTOList) {
-        List<Pets> newPets = dogDTOList.stream()
+    public List<Pets> createPets(List<? extends PetCreateRequestDTO> petDTOList) {
+        List<Pets> newPets = petDTOList.stream()
                 .map(petMapper::toEntity)
                 .collect(toList());
 
@@ -97,6 +98,13 @@ public class PetServiceImpl implements PetService {
     @Override
     public Pets updatePet(DogsPetsView dogPetView) {
         Pets newPet = petMapper.toEntity(dogPetView);
+
+        return petRepository.update(newPet);
+    }
+
+    @Override
+    public Pets updatePet(CatsPetsView catPetView) {
+        Pets newPet = petMapper.toEntity(catPetView);
 
         return petRepository.update(newPet);
     }

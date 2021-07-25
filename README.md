@@ -33,6 +33,15 @@ See the [Postman API collection](https://www.getpostman.com/collections/520471b7
 ---
 <h2 align="center">Getting start</h2>
 
+In order to **generate all required for development source files** based on .cds-files,
+execute the following command:
+```shell
+mvn clean install
+```
+
+Mark directory `cds` under `srv/src/gen/java` directory
+as **Generated Sources Root** in IntelliJ IDEA.
+
 Locally the app uses embedded  SQLite database.<br>
 Execute the following commands in the *root directory* of the project.<br>
 In order to **install SQLite to the project**
@@ -46,16 +55,7 @@ execute the following command:
 ```shell
 cds deploy --to sqlite
 ```
-
-In order to **generate all required for development source files** based on .cds-files,
-execute the following command:
-```shell
-mvn clean install
-```
-
-Mark directory `cds` under `srv/src/gen/java` directory
-as **Generated Sources Root** in IntelliJ IDEA.
-<br><br>
+<br>
 
 Now you're able to develop project or launch it.
 

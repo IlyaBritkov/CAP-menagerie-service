@@ -24,10 +24,9 @@ entity Pets : cuid {
     owner      : Association to Owners;
 }
 
-entity Cats { // todo
-
-    key pet         : Composition of Pets;
-        isCastrated : Boolean
+entity Cats : cuid {
+    @assert.unique pet : Composition of Pets;
+    isCastrated        : Boolean
 }
 
 entity Dogs : cuid {
