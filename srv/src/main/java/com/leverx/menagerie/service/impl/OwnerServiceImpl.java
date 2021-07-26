@@ -31,4 +31,15 @@ public class OwnerServiceImpl implements OwnerService {
         return ownerRepository.isOwnerByIdExists(id);
     }
 
+    @Override
+    public long deleteById(String ownerId) {
+        long deletedRows = ownerRepository.deleteById(ownerId);
+
+        if (deletedRows == 0) {
+            throw new ServiceException(NOT_FOUND, String.format("Owner with ID = %s doesn't exist", ownerId));
+        }
+
+        return deletedRows;
+    }
+
 }

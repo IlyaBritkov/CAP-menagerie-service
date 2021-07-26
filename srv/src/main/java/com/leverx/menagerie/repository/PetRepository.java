@@ -17,4 +17,5 @@ public interface PetRepository {
 
     List<Pets> update(List<Pets> updatedPets);
 
+    List<Pets> findAllByOwnerId(String ownerId);
 }

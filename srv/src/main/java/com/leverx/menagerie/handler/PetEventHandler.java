@@ -5,6 +5,7 @@ import cds.gen.petservice.CatsPetsView_;
 import cds.gen.petservice.DogsPetsView;
 import cds.gen.petservice.DogsPetsView_;
 import cds.gen.petservice.ExchangePetsContext;
+import cds.gen.petservice.Owners_;
 import cds.gen.petservice.PetService_;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leverx.menagerie.dto.request.create.CatCreateRequestDTO;
@@ -16,12 +17,15 @@ import com.leverx.menagerie.service.DogService;
 import com.leverx.menagerie.service.PetService;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CdsCreateEventContext;
+import com.sap.cds.services.cds.CdsDeleteEventContext;
 import com.sap.cds.services.cds.CdsUpdateEventContext;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.impl.execchain.RequestAbortedException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -32,6 +36,7 @@ import java.util.Map;
 
 import static com.sap.cds.services.ErrorStatuses.BAD_REQUEST;
 import static com.sap.cds.services.cds.CdsService.EVENT_CREATE;
+import static com.sap.cds.services.cds.CdsService.EVENT_DELETE;
 import static com.sap.cds.services.cds.CdsService.EVENT_UPDATE;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -41,7 +46,7 @@ import static java.util.stream.Collectors.toList;
 
 @Component
 @ServiceName(PetService_.CDS_NAME)
-public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check how deletion of owner affects on pets
+public class PetEventHandler implements EventHandler {
 
     @Qualifier("petServiceImpl")
     private final PetService petService;
@@ -59,7 +64,7 @@ public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check 
         List<DogsPetsView> dogsPetsViewList = dogService.createDog(requestDogDTOsList);
         List<Map<String, Object>> resultList = convertObjectListToObjectMapList(dogsPetsViewList);
 
-        context.setResult(resultList); // TODO: 7/25/2021 maybe add context.completed()
+        context.setResult(resultList);
     }
 
     @On(event = EVENT_CREATE, entity = CatsPetsView_.CDS_NAME)
@@ -96,6 +101,19 @@ public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check 
         context.setCompleted();
     }
 
+    @On(event = EVENT_DELETE, entity = Owners_.CDS_NAME)
+    public void onOwnerDelete(CdsDeleteEventContext context) {
+
+        String ownerId = getRequestedIdFromDeleteContext(context);
+
+        long amountOfDeletedOwners = petService.deleteOwnerById(ownerId);
+
+        List<Map<String, Long>> resultMap = List.of(Map.of("Amount of deleted owners", amountOfDeletedOwners));
+
+        context.setResult(resultMap);
+        context.setCompleted();
+    }
+
     /**
      * Exchange pets, if they belong different owners
      *
@@ -112,6 +130,14 @@ public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check 
         context.setCompleted();
     }
 
+    private <T> List<T> getRequestDTOListFromCreateContext(CdsCreateEventContext context, Class<T> objectClass) {
+        List<Map<String, Object>> entriesMaps = context.getCqn().asInsert().entries();
+
+        return entriesMaps.stream()
+                .map(entryMap -> objectMapper.convertValue(entryMap, objectClass))
+                .collect(toList());
+    }
+
     private <T> T getRequestDTOFromUpdateContext(CdsUpdateEventContext context, Class<T> objectClass) {
         List<Map<String, Object>> entriesMaps = context.getCqn().asUpdate().entries();
 
@@ -126,12 +152,30 @@ public class PetEventHandler implements EventHandler { // TODO: 7/25/2021 check 
         }
     }
 
-    private <T> List<T> getRequestDTOListFromCreateContext(CdsCreateEventContext context, Class<T> objectClass) {
-        List<Map<String, Object>> entriesMaps = context.getCqn().asInsert().entries();
+    private String getRequestedIdFromDeleteContext(CdsDeleteEventContext context) {
+        String jsonString = context.getCqn().asDelete().toJson();
 
-        return entriesMaps.stream()
-                .map(entryMap -> objectMapper.convertValue(entryMap, objectClass))
-                .collect(toList());
+        JSONObject jsonObj = new JSONObject(jsonString);
+
+        try {
+            String id = jsonObj.getJSONObject("DELETE")
+                    .getJSONObject("from")
+                    .getJSONArray("ref")
+                    .getJSONObject(0)
+                    .getJSONArray("where")
+                    .getJSONObject(2)
+                    .get("val")
+                    .toString();
+
+            if (id == null || id.isEmpty()) {
+                throw new RequestAbortedException("ID from delete request is absent");
+            }
+
+            return id;
+        } catch (Exception ex) {
+            log.error("Exception occurred during parsing request json of delete request: {}. Request json: {}", ex.getMessage(), jsonObj);
+            throw new ServiceException(BAD_REQUEST, "Bad ID credentials");
+        }
     }
 
     private <T> List<Map<String, Object>> convertObjectToObjectMapList(T object) {

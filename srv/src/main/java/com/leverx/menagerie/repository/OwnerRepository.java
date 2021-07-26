@@ -10,4 +10,5 @@ public interface OwnerRepository {
 
     boolean isOwnerByIdExists(String id);
 
+    long deleteById(String id);
 }

@@ -3,7 +3,9 @@ package com.leverx.menagerie.repository.impl;
 import cds.gen.petservice.Owners;
 import cds.gen.petservice.Owners_;
 import com.leverx.menagerie.repository.OwnerRepository;
+import com.sap.cds.ql.Delete;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.cqn.CqnDelete;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.services.persistence.PersistenceService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,15 @@ public class OwnerRepositoryImpl implements OwnerRepository {
 
         return db.run(selectById)
                 .rowCount() != 0;
+    }
+
+    @Override
+    public long deleteById(String id) {
+        CqnDelete delete = Delete.from(Owners_.class)
+                .where(owners -> owners.ID().eq(id));
+
+        return db.run(delete)
+                .rowCount();
     }
 
 }

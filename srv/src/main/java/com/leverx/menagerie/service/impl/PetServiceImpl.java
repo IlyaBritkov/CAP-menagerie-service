@@ -13,7 +13,6 @@ import com.sap.cds.services.ServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +32,9 @@ public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
 
-    @Qualifier("ownerServiceImpl")
-    private final OwnerService ownerService;
-
     private final CheckExistenceServiceImpl checkExistenceService;
+
+    private final OwnerService ownerService;
 
     private final PetMapper petMapper;
 
@@ -107,6 +105,29 @@ public class PetServiceImpl implements PetService {
         Pets newPet = petMapper.toEntity(catPetView);
 
         return petRepository.update(newPet);
+    }
+
+    @Override
+    public long deleteOwnerById(String ownerId) {
+        long amountOfDeletedOwners = ownerService.deleteById(ownerId);
+
+        removeOwnerFromPets(ownerId);
+
+        return amountOfDeletedOwners;
+    }
+
+    @Override
+    public void removeOwnerFromPets(String ownerId) {
+        List<Pets> pets = petRepository.findAllByOwnerId(ownerId);
+
+        if (!pets.isEmpty()) {
+            pets.forEach(pet -> {
+                pet.setOwnerId(null);
+                pet.setOwner(null);
+            });
+
+            petRepository.update(pets);
+        }
     }
 
     private void validatePetsAreAlive(Pets firstPet, Pets secondPet) {

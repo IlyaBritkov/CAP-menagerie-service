@@ -9,4 +9,6 @@ public interface OwnerService {
 
     boolean isOwnerByIdExists(String id);
 
+    long deleteById(String ownerId);
+
 }

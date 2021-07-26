@@ -69,4 +69,13 @@ public class PetRepositoryImpl implements PetRepository {
                 .listOf(Pets.class);
     }
 
+    @Override
+    public List<Pets> findAllByOwnerId(String ownerId) {
+        CqnSelect select = Select.from(Pets_.class)
+                .where(p -> p.owner_ID().eq(ownerId));
+
+        return db.run(select)
+                .listOf(Pets.class);
+    }
+
 }
