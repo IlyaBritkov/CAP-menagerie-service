@@ -31,7 +31,7 @@ public class CatRepositoryImpl implements CatRepository {
                 .limit(1);
 
         return db.run(selectById)
-                .first(CatsPetsView.class); // TODO: 7/25/2021 maybe replace by .single();
+                .first(CatsPetsView.class);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CatRepositoryImpl implements CatRepository {
     }
 
     @Override
-    public CatsPetsView update(CatsPetsView newCat) { // TODO: 7/25/2021 try or get rid of it.
+    public CatsPetsView update(CatsPetsView newCat) {
         Update<CatsPetsView_> updateCat = Update.entity(CatsPetsView_.class)
                 .data(newCat);
 

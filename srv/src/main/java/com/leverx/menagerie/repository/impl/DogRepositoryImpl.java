@@ -53,7 +53,7 @@ public class DogRepositoryImpl implements DogRepository {
     }
 
     @Override
-    public DogsPetsView update(DogsPetsView dog) { // todo try it
+    public DogsPetsView update(DogsPetsView dog) {
         Update<DogsPetsView_> updateDog = Update.entity(DogsPetsView_.class)
                 .data(dog);
 
