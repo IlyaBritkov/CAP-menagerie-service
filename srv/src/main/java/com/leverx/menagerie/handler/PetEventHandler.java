@@ -15,6 +15,10 @@ import com.leverx.menagerie.dto.request.update.DogUpdateRequestDTO;
 import com.leverx.menagerie.service.CatService;
 import com.leverx.menagerie.service.DogService;
 import com.leverx.menagerie.service.PetService;
+import com.sap.cds.ql.cqn.AnalysisResult;
+import com.sap.cds.ql.cqn.CqnAnalyzer;
+import com.sap.cds.ql.cqn.CqnStatement;
+import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CdsCreateEventContext;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
@@ -24,8 +28,6 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.execchain.RequestAbortedException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -153,29 +155,15 @@ public class PetEventHandler implements EventHandler {
     }
 
     private String getRequestedIdFromDeleteContext(CdsDeleteEventContext context) {
-        String jsonString = context.getCqn().asDelete().toJson();
+        CdsModel cdsModel = context.getModel();
+        CqnAnalyzer cqnAnalyzer = CqnAnalyzer.create(cdsModel);
 
-        JSONObject jsonObj = new JSONObject(jsonString);
+        CqnStatement cqn = context.getCqn();
+        AnalysisResult result = cqnAnalyzer.analyze(cqn.ref());
 
-        try {
-            String id = jsonObj.getJSONObject("DELETE")
-                    .getJSONObject("from")
-                    .getJSONArray("ref")
-                    .getJSONObject(0)
-                    .getJSONArray("where")
-                    .getJSONObject(2)
-                    .get("val")
-                    .toString();
+        Map<String, Object> rootKeys = result.rootKeys();
 
-            if (id == null || id.isEmpty()) {
-                throw new RequestAbortedException("ID from delete request is absent");
-            }
-
-            return id;
-        } catch (Exception ex) {
-            log.error("Exception occurred during parsing request json of delete request: {}. Request json: {}", ex.getMessage(), jsonObj);
-            throw new ServiceException(BAD_REQUEST, "Bad ID credentials");
-        }
+        return (String) rootKeys.get("ID");
     }
 
     private <T> List<Map<String, Object>> convertObjectToObjectMapList(T object) {
