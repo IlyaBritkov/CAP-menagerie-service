@@ -63,7 +63,6 @@ public class DogServiceImpl implements DogService {
                     return dogMapper.toEntity(currentDog, currentPet);
                 }).collect(toList());
 
-
         List<Dogs> persistedDogsList = dogRepository.save(newDogsList);
 
         return StreamUtils

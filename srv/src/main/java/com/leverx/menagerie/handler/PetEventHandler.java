@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,9 +111,12 @@ public class PetEventHandler implements EventHandler {
 
         long amountOfDeletedOwners = petService.deleteOwnerById(ownerId);
 
-        List<Map<String, Long>> resultMap = List.of(Map.of("Amount of deleted owners", amountOfDeletedOwners));
+        Map<String, Long> resultMap = new HashMap<>();
+        resultMap.put("Amount of deleted owners", amountOfDeletedOwners);
 
-        context.setResult(resultMap);
+        List<Map<String, Long>> resultMapList = singletonList(resultMap);
+
+        context.setResult(resultMapList);
         context.setCompleted();
     }
 

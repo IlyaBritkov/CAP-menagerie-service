@@ -32,5 +32,6 @@ service PetService {
         };
 
     entity Owners       as projection on datamodel.Owners;
-    action exchangePets(firstPetId : String, secondPetId : String);
+
+    action exchangePets(firstPetId : UUID, secondPetId : UUID);
 }
