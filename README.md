@@ -63,3 +63,14 @@ In order to **compile & launch** application execute the following command:
 ```shell
 mvn clean spring-boot:run
 ```
+
+---
+<h2 align="center">Start up with Docker</h2>
+
+```shell
+docker build --tag menagerie-service .
+```
+
+---
+<h2 align="center">Swagger</h2>
+- A simple Swagger UI for the CatalogService API at <http://localhost:8080/swagger/index.html>
