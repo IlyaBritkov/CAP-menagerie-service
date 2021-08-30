@@ -1,4 +1,4 @@
-<h1 align="center"><b>CAP-menagerie-service web app</b></h1>
+<h1><b>CAP-menagerie-service web app</b></h1>
 
 <h2 align="center">Predefined requirements</h2>
 Before starting the project you have to do
@@ -33,6 +33,12 @@ See the [Postman API collection](https://www.getpostman.com/collections/520471b7
 ---
 <h2 align="center">Getting start</h2>
 
+If you haven't `node_modules` package in the root of the project,
+just run the following command:
+```shell
+npm install
+```
+
 In order to **generate all required for development source files** based on .cds-files,
 execute the following command:
 ```shell
@@ -44,8 +50,9 @@ as **Generated Sources Root** in IntelliJ IDEA.
 
 Locally the app uses embedded  SQLite database.<br>
 Execute the following commands in the *root directory* of the project.<br>
+
 In order to **install SQLite to the project**
-execute the following command:
+execute the following command: 
 ```shell
 npm install --save-dev sqlite3
 ```
@@ -73,4 +80,6 @@ docker build --tag menagerie-service .
 
 ---
 <h2 align="center">Swagger</h2>
-- A simple Swagger UI for the CatalogService API at <http://localhost:8080/swagger/index.html>
+
+A simple Swagger UI for the CatalogService API 
+at <http://localhost:8080/swagger/index.html>
