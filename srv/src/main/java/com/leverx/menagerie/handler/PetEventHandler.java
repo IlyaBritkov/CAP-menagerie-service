@@ -1,8 +1,5 @@
 package com.leverx.menagerie.handler;
 
-import cds.gen.com.leverx.menagerie.BOMHeader;
-import cds.gen.com.leverx.menagerie.BOMHeader_;
-import cds.gen.com.leverx.menagerie.BaselineAssignment;
 import cds.gen.petservice.CatsPetsView;
 import cds.gen.petservice.CatsPetsView_;
 import cds.gen.petservice.DogsPetsView;
@@ -10,7 +7,6 @@ import cds.gen.petservice.DogsPetsView_;
 import cds.gen.petservice.ExchangePetsContext;
 import cds.gen.petservice.Owners_;
 import cds.gen.petservice.PetService_;
-import cds.gen.petservice.TestContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leverx.menagerie.dto.request.create.CatCreateRequestDTO;
 import com.leverx.menagerie.dto.request.create.DogCreateRequestDTO;
@@ -19,13 +15,8 @@ import com.leverx.menagerie.dto.request.update.DogUpdateRequestDTO;
 import com.leverx.menagerie.service.CatService;
 import com.leverx.menagerie.service.DogService;
 import com.leverx.menagerie.service.PetService;
-import com.sap.cds.ql.Insert;
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.StructuredType;
 import com.sap.cds.ql.cqn.AnalysisResult;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
-import com.sap.cds.ql.cqn.CqnInsert;
-import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.ql.cqn.CqnStatement;
 import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.ServiceException;
@@ -35,7 +26,6 @@ import com.sap.cds.services.cds.CdsUpdateEventContext;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +33,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +132,7 @@ public class PetEventHandler implements EventHandler {
 
         log.info("Exchange request with pet ids: [{},{}]", firstPetId, secondPetId);
 
-//        petService.exchangePets(firstPetId, secondPetId); TODO
+        petService.exchangePets(firstPetId, secondPetId);
         context.setCompleted();
     }
 
@@ -197,22 +186,4 @@ public class PetEventHandler implements EventHandler {
         return resultList;
     }
 
-    private final PersistenceService persistenceService;
-
-    @On(event = "test")
-    public void test(TestContext context){
-        cds.gen.com.leverx.menagerie.BOMHeader bh = cds.gen.com.leverx.menagerie.BOMHeader.create();
-        cds.gen.com.leverx.menagerie.Validity validity = cds.gen.com.leverx.menagerie.Validity.create();
-
-        bh.setValidity(Arrays.asList(validity));
-        CqnInsert insert = Insert.into(BOMHeader_.class).entry(bh);
-        persistenceService.run(insert);
-
-        CqnSelect query = Select.from(BOMHeader_.class).columns(select).where(id not null);
-        
-        BaselineAssignment baselineAssignment = BaselineAssignment.create();
-        bh.setBaselineAssignments(Arrays.asList(baselineAssignment));
-
-        context.setCompleted();
-    }
 }
